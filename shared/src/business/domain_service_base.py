@@ -14,7 +14,7 @@ class DomainServiceBase[T](IDomainService[T]):
     async def find_by(self, filter):
         return await self.repository.find_by(filter)
     
-    async def create(self, entity: T):
+    async def add(self, entity: T):
         return await self.repository.add(entity)
     
     async def update(self, entity: T):

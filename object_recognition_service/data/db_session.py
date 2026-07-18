@@ -5,5 +5,5 @@ from shared.src.data.interfaces.db_session import IDbSession
 
 
 class ObjectRecognitionDbSession(DbSessionBase):
-    def __init__(self, db_session: IDbSession):
-        super().__init__(db_session)    
+    def __init__(self):
+        super().__init__()    

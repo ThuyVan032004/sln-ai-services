@@ -6,13 +6,6 @@ from shared.src.contracts.requests.create_request import CreateRequest, CreateRe
 
 class CreatePredictionRequest(CreateRequest):
     image_id: UUID
-    model_id: UUID
-    category_id: UUID
-    confidence: float
-    bbox_x: float
-    bbox_y: float
-    bbox_width: float
-    bbox_height: float
 
 class CreatePredictionResponse(CreateResponse):
     id: str

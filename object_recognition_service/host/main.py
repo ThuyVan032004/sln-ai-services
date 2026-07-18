@@ -3,35 +3,12 @@ from fastapi import FastAPI
 
 # 1. Import container để đảm bảo nó được khởi tạo và wire các module
 # Thay 'container_config' bằng tên file chứa class Container của bạn
-from host.container import container
+# from host.container import container
 
 # 2. Import các controller (nơi chứa APIRouter của FastAPI)
-from host.controllers import image_controller
-from host.controllers import model_controller
-from host.controllers import prediction_controller
-
-    
-container.wire(modules=[
-    "host.controllers.image_controller",
-    "host.controllers.model_controller",
-    "host.controllers.prediction_controller",
-    
-    "host.request_handlers.create_image_request_handler",
-    "host.request_handlers.create_model_request_handler",
-    "host.request_handlers.get_detail_model_request_handler",
-    "host.request_handlers.delete_model_request_handler",
-    "host.request_handlers.update_model_request_handler",
-    "host.request_handlers.update_prediction_request_handler",
-    "host.request_handlers.create_prediction_request_handler",
-    
-    "business.services.image_service",
-    "business.services.model_service",
-    "business.services.prediction_service",
-    
-    "business.managers.image_manager",
-    "business.managers.model_manager",
-    "business.managers.prediction_manager"
-])
+from object_recognition_service.host.controllers import image_controller
+from object_recognition_service.host.controllers import model_controller
+from object_recognition_service.host.controllers import prediction_controller
 
 def create_app() -> FastAPI:
     """Hàm khởi tạo ứng dụng FastAPI"""

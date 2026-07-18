@@ -7,6 +7,8 @@ from shared.src.data.models.audit_model_base import AuditModelBase
 class Image(AuditModelBase):
     __tablename__ = "image"
     
+    __table_args__ = {"keep_existing": True}
+    
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     file_name: Mapped[str]
     file_path: Mapped[str]

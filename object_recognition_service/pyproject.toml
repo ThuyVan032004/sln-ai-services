@@ -6,17 +6,19 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.18.5",
+    "asyncpg>=0.31.0",
     "dependency-injector>=4.49.1",
     "fastapi>=0.139.0",
     "psycopg2>=2.9.12",
     "python-cqrs>=4.10.3",
+    "python-multipart>=0.0.32",
     "shared",
     "sqlalchemy>=2.0.51",
     "uvicorn>=0.51.0",
 ]
 
 [tool.uv.sources]
-shared = { path = "../shared", editable = true }   # Package "shared" is located in the parent directory
+shared = { path = "../shared", editable = true }  
 
 [build-system]
 requires = ["hatchling"]

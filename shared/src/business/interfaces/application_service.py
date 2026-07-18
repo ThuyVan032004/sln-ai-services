@@ -6,6 +6,4 @@ from shared.src.data.interfaces.repository import IRepository
 
 
 class IApplicationService(ABC):
-    @abstractmethod
-    async def get_service(self, domain_service: Provider[IDomainService]):
-        pass
+    pass
