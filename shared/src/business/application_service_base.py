@@ -6,8 +6,8 @@ from shared.src.business.interfaces.domain_service import IDomainService
 
 
 class ApplicationServiceBase(IApplicationService):
-    async def get_service(self, domain_service: Provider[IDomainService]):
-        return domain_service()
+    def get_service(self, domain_service: IDomainService):
+        return domain_service
         
         
         

@@ -4,8 +4,8 @@ from dependency_injector.providers import Provider
 
 
 class UnitOfWorkBase(IUnitOfWork):
-    def __init__(self, db_session: Provider[IDbSession]):
-        self.db_session = db_session()
+    def __init__(self, db_session: IDbSession):
+        self.db_session = db_session.get_session()
         
     async def commit(self):
         await self.db_session.commit()

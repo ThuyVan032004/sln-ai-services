@@ -10,9 +10,8 @@ from shared.src.data.interfaces.repository import IRepository
 from shared.src.data.interfaces.unit_of_work import IUnitOfWork
 
 class RepositoryBase[T](IRepository[T]):
-    def __init__(self, db_session: Provider[IDbSession], unit_of_work: Provider[IUnitOfWork]):
-        self.db_session = db_session()
-        self.unit_of_work = unit_of_work()
+    def __init__(self, db_session: IDbSession):
+        self.db_session = db_session.get_session()
 
     def _resolve_entity_type(self) -> Type[T]:
         return get_args(self.__orig_bases__[0])[0]
@@ -38,28 +37,24 @@ class RepositoryBase[T](IRepository[T]):
     async def add(self, entity: T):
         self._set_create_audit_fields(entity)
         self.db_session.add(entity)
-        await self.unit_of_work.commit()
         
         return entity
     
     async def update(self, entity: T):
         self._set_update_audit_fields(entity)
         self.db_session.merge(entity)
-        await self.unit_of_work.commit()
         
         return entity
     
     async def delete(self, entity: T):
         self._set_delete_audit_fields(entity)
-        await self.db_session.delete(entity)
-        await self.unit_of_work.commit()
+        await self.db_session.merge(entity)
 
     async def add_range(self, entities: List[T]):
         for entity in entities:
             self._set_create_audit_fields(entity)
         
         self.db_session.add_all(entities)
-        await self.unit_of_work.commit()
         
         return entities
     
@@ -67,13 +62,10 @@ class RepositoryBase[T](IRepository[T]):
         for entity in entities:
             self._set_update_audit_fields(entity)
             await self.db_session.merge(entity)
-            
-        await self.unit_of_work.commit()
         
         return entities
 
     async def delete_range(self, entities: List[T]):
         for entity in entities:
             self._set_delete_audit_fields(entity)
-            await self.db_session.delete(entity)
-        await self.unit_of_work.commit()
+            await self.db_session.merge(entity)

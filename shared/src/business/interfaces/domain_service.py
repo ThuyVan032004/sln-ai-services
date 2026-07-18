@@ -4,7 +4,7 @@ from typing import List
 class IDomainService(ABC):
     pass
 
-class IDomainService[T](ABC, IDomainService):
+class IDomainService[T](IDomainService):
     @abstractmethod
     async def get_all(self):
         pass

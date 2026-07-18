@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+class IRepository(ABC):
+    pass
 
-class IRepository[T](ABC):
+class IRepository[T](IRepository):
     @abstractmethod
     async def get_all(self):
         pass

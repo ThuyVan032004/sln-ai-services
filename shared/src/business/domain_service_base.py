@@ -4,7 +4,7 @@ from shared.src.business.interfaces.domain_service import IDomainService
 from shared.src.data.interfaces.repository import IRepository
 
 
-class DomainServiceBase[T](IDomainService):
+class DomainServiceBase[T](IDomainService[T]):
     def __init__(self, repository: IRepository[T]):
         self.repository = repository
     
@@ -14,7 +14,7 @@ class DomainServiceBase[T](IDomainService):
     async def find_by(self, filter):
         return await self.repository.find_by(filter)
     
-    async def add(self, entity: T):
+    async def create(self, entity: T):
         return await self.repository.add(entity)
     
     async def update(self, entity: T):
