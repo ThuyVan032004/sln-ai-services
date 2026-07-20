@@ -8,9 +8,9 @@ from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Factory
 from pydantic.alias_generators import to_snake
 
-from shared.src.business.interfaces.application_service import IApplicationService
-from shared.src.business.interfaces.domain_service import IDomainService
-from shared.src.common.constants.env_constants import EnvConstants
+from shared.business.interfaces.application_service import IApplicationService
+from shared.business.interfaces.domain_service import IDomainService
+from shared.common.constants.env_constants import EnvConstants
 
 
 def add_services_with_assigned_interface[T](container: DynamicContainer, interface: Type[T]):

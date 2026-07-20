@@ -1,7 +1,7 @@
 from dependency_injector.providers import Provider
 
-from shared.src.data.interfaces.db_session import IDbSession
-from shared.src.data.unit_of_work_base import UnitOfWorkBase
+from shared.data.interfaces.db_session import IDbSession
+from shared.data.unit_of_work_base import UnitOfWorkBase
 
 
 class ObjectRecognitionUnitOfWork(UnitOfWorkBase):

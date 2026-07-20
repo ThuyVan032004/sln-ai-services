@@ -1,7 +1,7 @@
 from uuid import UUID
 
 
-from shared.src.contracts.requests.create_request import CreateRequest, CreateResponse
+from shared.contracts.requests.create_request import CreateRequest, CreateResponse
 
 
 class CreatePredictionRequest(CreateRequest):

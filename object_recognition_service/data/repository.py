@@ -1,8 +1,8 @@
 from dependency_injector.providers import Provider
 
-from shared.src.data.interfaces.unit_of_work import IUnitOfWork
-from shared.src.data.interfaces.db_session import IDbSession
-from shared.src.data.repository_base import RepositoryBase
+from shared.data.interfaces.unit_of_work import IUnitOfWork
+from shared.data.interfaces.db_session import IDbSession
+from shared.data.repository_base import RepositoryBase
 
 
 class ObjectRecognitionRepository[T](RepositoryBase[T]):

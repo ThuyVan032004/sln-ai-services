@@ -1,6 +1,6 @@
 from typing import Optional
 
-from shared.src.contracts.requests.create_request import CreateRequest, CreateResponse
+from shared.contracts.requests.create_request import CreateRequest, CreateResponse
 from data.enums.model_enum import ModelStatus
 
 

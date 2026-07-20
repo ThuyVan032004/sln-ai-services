@@ -1,5 +1,5 @@
 from data.enums.model_enum import ModelStatus
-from shared.src.contracts.requests.get_detail_request import GetDetailRequest, GetDetailResponse
+from shared.contracts.requests.get_detail_request import GetDetailRequest, GetDetailResponse
 
 
 class GetDetailModelRequest(GetDetailRequest):

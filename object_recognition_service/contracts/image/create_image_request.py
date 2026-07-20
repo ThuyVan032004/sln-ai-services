@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import File, UploadFile
 
-from shared.src.contracts.requests.create_request import CreateRequest, CreateResponse
+from shared.contracts.requests.create_request import CreateRequest, CreateResponse
 
 
 class CreateImageRequest(CreateRequest):

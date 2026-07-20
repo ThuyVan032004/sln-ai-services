@@ -1,6 +1,6 @@
-from shared.src.business.domain_service_base import DomainServiceBase
-from shared.src.data.interfaces.repository import IRepository
-from shared.src.data.interfaces.unit_of_work import IUnitOfWork
+from shared.business.domain_service_base import DomainServiceBase
+from shared.data.interfaces.repository import IRepository
+from shared.data.interfaces.unit_of_work import IUnitOfWork
 
 
 class ObjectRecognitionDomainService(DomainServiceBase):

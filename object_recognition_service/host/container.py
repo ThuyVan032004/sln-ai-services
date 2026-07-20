@@ -22,7 +22,7 @@ from object_recognition_service.host.request_handlers.delete_model_request_handl
 from object_recognition_service.host.request_handlers.get_detail_model_request_handler import GetDetailModelRequestHandler
 from object_recognition_service.host.request_handlers.update_model_request_handler import UpdateModelRequestHandler
 from object_recognition_service.host.request_handlers.update_prediction_request_handler import UpdatePredictionRequestHandler
-from shared.src.host.service_provider import add_application_services, add_domain_services, add_request_handlers
+from shared.host.service_provider import add_application_services, add_domain_services, add_request_handlers
 
 T = TypeVar("T")
 

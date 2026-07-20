@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from shared.src.contracts.requests.update_request import UpdateRequest, UpdateResponse
+from shared.contracts.requests.update_request import UpdateRequest, UpdateResponse
 
 
 class UpdatePredictionRequest(UpdateRequest):

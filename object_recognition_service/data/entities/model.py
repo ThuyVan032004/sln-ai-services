@@ -2,7 +2,7 @@ from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 from uuid import UUID, uuid4
 
-from shared.src.data.models.audit_model_base import AuditModelBase
+from shared.data.models.audit_model_base import AuditModelBase
 from data.enums.model_enum import ModelStatus
 
 

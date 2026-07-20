@@ -11,7 +11,7 @@ from alembic import context
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 # Import Base
-from shared.src.data.models.audit_model_base import AuditModelBase
+from shared.data.models.audit_model_base import AuditModelBase
 
 # Import every model so its table registers on AuditModelBase.metadata.
 # If any of these are missing, autogenerate will silently skip that table.

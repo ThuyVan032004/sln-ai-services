@@ -1,7 +1,7 @@
 from typing import List
 
-from shared.src.business.interfaces.domain_service import IDomainService
-from shared.src.data.interfaces.repository import IRepository
+from shared.business.interfaces.domain_service import IDomainService
+from shared.data.interfaces.repository import IRepository
 
 
 class DomainServiceBase[T](IDomainService[T]):
