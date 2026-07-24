@@ -6,4 +6,3 @@ class ModelStatus(Enum):
     READY = "ready"           # available for use/inference
     FAILED = "failed"         # training/upload failed
     ARCHIVED = "archived"     # deprecated/retired, kept for history
-    DELETED = "deleted"       # soft-deleted

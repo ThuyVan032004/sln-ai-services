@@ -1,29 +1,29 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from typing import Optional
 
-class AuditModelBase(DeclarativeBase):
-    __abstract__ = True
-    
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),      # DB sets this on INSERT
+from sqlalchemy import DateTime, Boolean, func
+from sqlmodel import SQLModel, Field
+
+
+class AuditModelBase(SQLModel):
+    created_at: datetime = Field(
+        sa_type=DateTime(timezone=True),
+        sa_column_kwargs={"server_default": func.now()},
         nullable=False,
     )
-    last_updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        onupdate=func.now(),            # auto-updated on every UPDATE
-        nullable=False,
-    )
-    deleted_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True),
-        nullable=True,                  # NULL until soft-deleted
+    last_updated_at: Optional[datetime] = Field(
         default=None,
+        sa_type=DateTime(timezone=True),
+        nullable=True,
     )
-    is_deleted: Mapped[bool] = mapped_column(
-        Boolean,
+    deleted_at: Optional[datetime] = Field(
+        default=None,
+        sa_type=DateTime(timezone=True),
+        nullable=True,
+    )
+    is_deleted: bool = Field(
         default=False,
-        server_default="false",
+        sa_type=Boolean,
+        sa_column_kwargs={"server_default": "false"},
         nullable=False,
     )
-    

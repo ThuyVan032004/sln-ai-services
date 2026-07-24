@@ -11,6 +11,7 @@ from pydantic.alias_generators import to_snake
 from shared.business.interfaces.application_service import IApplicationService
 from shared.business.interfaces.domain_service import IDomainService
 from shared.common.constants.env_constants import EnvConstants
+from shared.business.interfaces.mlflow_service import IMlflowService
 
 
 def add_services_with_assigned_interface[T](container: DynamicContainer, interface: Type[T]):
@@ -53,4 +54,7 @@ def add_domain_services(container: DynamicContainer):
     
 def add_request_handlers(container: DynamicContainer):
     add_services_with_assigned_interface(container, interface=RequestHandler)
+
+def add_mlflow_service(container: DynamicContainer):
+    add_services_with_assigned_interface(container, interface=IMlflowService)
 

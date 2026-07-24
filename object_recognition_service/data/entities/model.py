@@ -1,18 +1,20 @@
-from sqlalchemy import Enum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Column, Enum
 from uuid import UUID, uuid4
 
+from sqlmodel import Field
+
 from shared.data.models.audit_model_base import AuditModelBase
-from data.enums.model_enum import ModelStatus
+from object_recognition_service.data.enums.model_enum import ModelStatus
 
 
-class Model(AuditModelBase):
+class Model(AuditModelBase, table=True):
     __tablename__ = "model"
-    
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
-    name: Mapped[str]
-    checkpoint_uri: Mapped[str]
-    status: Mapped[ModelStatus] = mapped_column(
-        Enum(ModelStatus, name="status"),
-        nullable=False,
+    __table_args__ = {"keep_existing": True}
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    model_type: str  # recognition | detection
+    object_class: str
+    model_name: str
+    status: ModelStatus = Field(
+        sa_column=Column(Enum(ModelStatus, name="status"), nullable=False)
     )

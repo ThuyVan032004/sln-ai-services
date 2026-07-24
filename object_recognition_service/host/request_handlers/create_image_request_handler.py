@@ -9,7 +9,7 @@ from object_recognition_service.business.services.image_service import ImageServ
 
 class CreateImageRequestHandler(RequestHandler[CreateImageRequest, CreateImageResponse]):
     @inject
-    def __init__(self, image_service: ImageService = Depends(Provide["image_service"])):
+    def __init__(self, image_service: ImageService = Provide["image_service"]):
         self.image_service = image_service
         
     async def handle(self, request: CreateImageRequest) -> CreateImageResponse:

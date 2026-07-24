@@ -32,7 +32,7 @@ def create_app() -> FastAPI:
     
     app.include_router(
         prediction_controller.router, 
-        # tags=["Predictions"]
+        tags=["Predictions"]
     )
 
     return app

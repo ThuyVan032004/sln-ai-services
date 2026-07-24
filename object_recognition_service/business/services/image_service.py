@@ -1,11 +1,15 @@
+import os
 from uuid import uuid4
+
+from shared.common.constants.env_constants import EnvConstants
+
+from object_recognition_service.business.services.helpers.s3_helper import upload_image_to_s3
 
 from object_recognition_service.data.entities.image import Image
 from dependency_injector.wiring import inject, Provide
 
 from object_recognition_service.business.application_service import ObjectRecognitionApplicationService
 from object_recognition_service.contracts.image.create_image_request import CreateImageRequest, CreateImageResponse
-# from object_recognition_service.host.container import container
 
 class ImageService(ObjectRecognitionApplicationService):
     @inject
@@ -18,19 +22,26 @@ class ImageService(ObjectRecognitionApplicationService):
         file_content = await file.read()
         file_size = len(file_content)
         mime_type = file.content_type or "application/octet-stream"
+        filename = file.filename or "unnamed"
 
-        original_name = file.filename or "unnamed"
-
-        # 1. Lưu file vật lý qua ImageManager (dùng file_storage bên trong)
-        entity = Image(
-            id=uuid4(),
-            file_name=original_name,
-            file_size=file_size,
+        # 1. Upload to S3 first
+        file_path = await upload_image_to_s3(
+            file_content=file_content,
+            file_name=filename,
             mime_type=mime_type,
-            file_path="",  # Tạm thời để trống, sẽ cập nhật sau khi lưu file thành công
+            bucket_name=os.getenv(EnvConstants.AWS_S3_BUCKET),
+            region_name=os.getenv(EnvConstants.AWS_REGION),
         )
 
-        # 2. Lưu metadata entity vào DB qua repository
+        # 2. Save metadata with the real file_path
+        entity = Image(
+            id=uuid4(),
+            file_name=filename,
+            file_size=file_size,
+            mime_type=mime_type,
+            file_path=file_path,
+        )
+
         await self.image_manager.add(entity)
         await self.unit_of_work.commit()
 

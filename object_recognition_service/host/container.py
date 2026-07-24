@@ -1,5 +1,10 @@
 from typing import Type, TypeVar
 
+from data.entities.category import Category
+from data.entities.image import Image
+from data.entities.model import Model
+from data.entities.prediction import Prediction
+
 from object_recognition_service.contracts.image.create_image_request import CreateImageRequest
 from object_recognition_service.contracts.model.create_model_request import CreateModelRequest
 from object_recognition_service.contracts.model.delete_model_request import DeleteModelRequest
@@ -22,7 +27,7 @@ from object_recognition_service.host.request_handlers.delete_model_request_handl
 from object_recognition_service.host.request_handlers.get_detail_model_request_handler import GetDetailModelRequestHandler
 from object_recognition_service.host.request_handlers.update_model_request_handler import UpdateModelRequestHandler
 from object_recognition_service.host.request_handlers.update_prediction_request_handler import UpdatePredictionRequestHandler
-from shared.host.service_provider import add_application_services, add_domain_services, add_request_handlers
+from shared.host.service_provider import add_application_services, add_domain_services, add_mlflow_service, add_request_handlers
 
 T = TypeVar("T")
 
@@ -35,9 +40,25 @@ class Container(DynamicContainer):
             ObjectRecognitionUnitOfWork,
             self.db_session
         )
-        self.repository = providers.Factory(
+        self.image_repository = providers.Factory(
             ObjectRecognitionRepository,
-            self.db_session,
+            db_session=self.db_session,
+            entity_type=Image
+        )
+        self.model_repository = providers.Factory(
+            ObjectRecognitionRepository,
+            db_session=self.db_session,
+            entity_type=Model
+        )
+        self.category_repository = providers.Factory(
+            ObjectRecognitionRepository,
+            db_session=self.db_session,
+            entity_type=Category
+        )
+        self.prediction_repository = providers.Factory(
+            ObjectRecognitionRepository,
+            db_session=self.db_session,
+            entity_type=Prediction
         )
         
         request_map = RequestMap()
@@ -55,6 +76,12 @@ class Container(DynamicContainer):
             request_map,
             self
         )
+    
+    @staticmethod
+    def create_repository(db_session_provider, entity_type):
+        repo = ObjectRecognitionRepository(db_session_provider)
+        repo._entity_type = entity_type
+        return repo
         
     async def resolve(self, handler_cls: Type[T]) -> T:
         """
@@ -93,6 +120,7 @@ container = Container()
 add_application_services(container)
 add_domain_services(container)
 add_request_handlers(container)
+add_mlflow_service(container)
 
 # container.wire(
 #     packages=[
@@ -120,7 +148,8 @@ container.wire(modules=[
     
     "object_recognition_service.business.managers.image_manager",
     "object_recognition_service.business.managers.model_manager",
-    "object_recognition_service.business.managers.prediction_manager"
+    "object_recognition_service.business.managers.prediction_manager",
+    "object_recognition_service.business.managers.category_manager",
 ])
 
 

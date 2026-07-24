@@ -10,9 +10,11 @@ requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.18.5",
     "dependency-injector>=4.49.1",
+    "mlflow>=3.14.0",
     "pydantic>=2.13.4",
     "python-cqrs>=4.10.3",
     "sqlalchemy>=2.0.51",
+    "sqlmodel>=0.0.39",
 ]
 
 [build-system]
