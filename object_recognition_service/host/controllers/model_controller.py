@@ -7,7 +7,7 @@ from contracts.model.get_detail_model_request import GetDetailModelRequest, GetD
 from contracts.model.create_model_request import CreateModelRequest, CreateModelResponse
 from contracts.model.update_model_request import UpdateModelRequest, UpdateModelResponse
 from contracts.model.delete_model_request import DeleteModelRequest, DeleteModelResponse
-from host.container import container
+from object_recognition_service.host.container import container
 
 
 router = APIRouter(prefix="/models")

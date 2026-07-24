@@ -3,7 +3,7 @@ from data.repository import ObjectRecognitionRepository
 from dependency_injector.wiring import inject, Provide
 
 from business.domain_service import ObjectRecognitionDomainService
-from host.container import container
+from object_recognition_service.host.container import container
 
 class ModelManager(ObjectRecognitionDomainService):
     @inject
