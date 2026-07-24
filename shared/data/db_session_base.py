@@ -9,6 +9,8 @@ class DbSessionBase(IDbSession):
         database_url = os.getenv(EnvConstants.DATABASE_URL)
         if not database_url:
             raise ValueError(f"Environment variable '{EnvConstants.DATABASE_URL}' is not set.")
+        
+        print(f"Connecting to database at: {database_url}")  # Debugging line
 
         self._engine = create_async_engine(database_url, echo=False)
         self._session_factory = async_sessionmaker(
