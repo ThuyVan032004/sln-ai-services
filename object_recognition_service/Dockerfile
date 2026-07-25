@@ -8,12 +8,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
     libpq-dev \
-    libgl1 \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    libxcb1 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -23,7 +17,9 @@ COPY object_recognition_service /app/object_recognition_service
 
 RUN pip install --upgrade pip \
     && pip install -e /app/shared \
-    && pip install -e /app/object_recognition_service
+    && pip install -e /app/object_recognition_service \
+    && pip uninstall -y opencv-python opencv-python-headless \
+    && pip install --no-cache-dir opencv-python-headless
 
 EXPOSE 8000
 
