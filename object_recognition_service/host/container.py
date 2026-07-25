@@ -1,5 +1,6 @@
 from typing import Type, TypeVar
 
+from business.mlflow_service import MlflowService
 from data.entities.category import Category
 from data.entities.image import Image
 from data.entities.model import Model
@@ -76,6 +77,10 @@ class Container(DynamicContainer):
             request_map,
             self
         )
+        
+        self.mlflow_service = providers.Singleton(
+            MlflowService
+        )
     
     @staticmethod
     def create_repository(db_session_provider, entity_type):
@@ -120,7 +125,7 @@ container = Container()
 add_application_services(container)
 add_domain_services(container)
 add_request_handlers(container)
-add_mlflow_service(container)
+# add_mlflow_service(container)
 
 # container.wire(
 #     packages=[

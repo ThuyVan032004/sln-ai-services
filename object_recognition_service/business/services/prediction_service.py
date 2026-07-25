@@ -3,7 +3,7 @@ import os
 from typing import List
 from sqlalchemy import and_
 
-from business.mlflow_service import ObjectRecognitionMlflowService
+from business.mlflow_service import MlflowService
 from common.constants import YOLO_CLASS_NAMES
 from data.entities.category import Category
 from data.entities.model import Model
@@ -33,13 +33,13 @@ class PredictionService(ObjectRecognitionApplicationService):
         image_manager = Provide["image_manager"], 
         category_manager = Provide["category_manager"],
         model_manager = Provide["model_manager"],
-        mlflow_service = Provide["mlflow_service"],
+        mlflow_service: MlflowService = Provide["mlflow_service"],
         unit_of_work = Provide["unit_of_work"]
     ):
         super().__init__(unit_of_work=unit_of_work)
         self.prediction_manager = prediction_manager
         self.image_manager = image_manager
-        self.mlflow_service = ObjectRecognitionMlflowService()
+        self.mlflow_service = mlflow_service
         self.category_manager = category_manager
         self.model_manager = model_manager
 
