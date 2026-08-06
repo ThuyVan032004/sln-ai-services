@@ -14,7 +14,7 @@ class PredictionController:
     @router.post("")
     @inject
     async def create(
-        request: CreatePredictionRequest, 
+        request: CreatePredictionRequest = Depends(),
         mediator: RequestMediator = Depends(Provide[container.mediator])
     ) -> CreatePredictionResponse:
         return await mediator.send(request)
