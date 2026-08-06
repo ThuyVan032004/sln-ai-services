@@ -1,25 +1,20 @@
 import io
 import os
-from typing import List
+import time
 from sqlalchemy import and_
 
 from business.mlflow_service import MlflowService
 from common.constants import YOLO_CLASS_NAMES
-from data.entities.category import Category
 from data.entities.model import Model
 from sqlalchemy import and_
 from object_recognition_service.data.enums.model_enum import ModelStatus
-import mlflow
 from PIL import Image
-from uuid import uuid4
 
 from object_recognition_service.business.services.helpers.s3_helper import download_image_from_s3
 from shared.common.constants.env_constants import EnvConstants
-from object_recognition_service.data.entities.prediction import Prediction
 from dependency_injector.wiring import inject, Provide
 
 from object_recognition_service.business.application_service import ObjectRecognitionApplicationService
-from object_recognition_service.data.entities.image import Image as ImageEntity
 from object_recognition_service.contracts.prediction.create_prediction_request import CreatePredictionDto, CreatePredictionRequest, CreatePredictionResponse
 from object_recognition_service.contracts.prediction.update_prediction_request import UpdatePredictionRequest, UpdatePredictionResponse
 from fastapi import HTTPException, status
@@ -166,8 +161,9 @@ class PredictionService(ObjectRecognitionApplicationService):
         image = Image.open(io.BytesIO(file_content)).convert("RGB")
 
         detection_model = self.mlflow_service.load_model(object_detection_model_name, "production")
-        
-        detections = detection_model.predict([image])[0]  # first (only) image's result
+
+        detection_image = image.resize((640, 640))  # resize cho detection
+        detections = detection_model.predict([detection_image])[0]  # first (only) image's result
 
         boxes = detections["boxes_xyxy"]
         confidences = detections["confidences"]
@@ -195,7 +191,6 @@ class PredictionService(ObjectRecognitionApplicationService):
             )
             
             if recognition_model is None:
-                print("Code is in this block")
                 prediction_dto = CreatePredictionDto(
                     prediction="unknown",
                     confidence=det_confidence,
@@ -213,9 +208,8 @@ class PredictionService(ObjectRecognitionApplicationService):
             )
 
             cropped_image = image.crop((bbox_x, bbox_y, bbox_x + bbox_width, bbox_y + bbox_height))
-
+            
             recognition_result = loaded_recognition_model.predict([cropped_image])
-            print(f"Recognition result for object class '{class_name}': {recognition_result}")
             label = recognition_result[0]["pred"] if recognition_result else "unknown"
 
             prediction_dto = CreatePredictionDto(

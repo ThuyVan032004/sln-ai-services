@@ -94,11 +94,29 @@ Sau khi chạy, service sẽ lắng nghe tại `http://localhost:8000`.
 - Health check: `GET http://localhost:8000/`
 - API docs (Swagger UI): `http://localhost:8000/docs`
 
-### Cách 2: chạy bằng Docker (tham khảo)
+### Cách 2: chạy bằng Docker Compose (khuyến nghị)
 
-Service cũng có thể build bằng [Dockerfile](Dockerfile) (build từ thư mục gốc repo vì cần copy cả `shared/`):
+Repo có file [docker-compose.yml](../docker-compose.yml) ở thư mục gốc, build từ [Dockerfile](Dockerfile) và giới hạn sẵn CPU/memory (1 CPU, 1GB RAM) cho container.
+
+Chạy từ thư mục gốc repo (`sln-ai-services/`):
+
+```bash
+docker compose up --build
+```
+
+Mặc định compose dùng biến môi trường từ `object_recognition_service/.env`. Sửa file này (hoặc trỏ `env_file` sang file khác) nếu cần đổi cấu hình.
+
+Dừng service:
+
+```bash
+docker compose down
+```
+
+### Cách 3: chạy bằng Docker thuần (tham khảo)
+
+Service cũng có thể build trực tiếp bằng [Dockerfile](Dockerfile) (build từ thư mục gốc repo vì cần copy cả `shared/`), không qua compose:
 
 ```bash
 docker build -f object_recognition_service/Dockerfile -t object-recognition-service .
-docker run -p 8000:8000 --env-file object_recognition_service/.env object-recognition-service
+docker run -p 8000:8000 --cpus="1.0" --memory="1g" --env-file object_recognition_service/.env object-recognition-service
 ```

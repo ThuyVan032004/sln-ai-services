@@ -1,0 +1,16 @@
+services:
+  object_recognition_service:
+    build:
+      context: .
+      dockerfile: object_recognition_service/Dockerfile
+    env_file:
+      - object_recognition_service/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./object_recognition_service/app.db:/app/app.db
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1g
