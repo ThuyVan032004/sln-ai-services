@@ -8,12 +8,7 @@ Service đọc cấu hình từ file `.env` tại thư mục gốc của service
 
 ```env
 APPLICATION_NAME=object_recognition_service
-DATABASE_URL=postgresql+asyncpg://<user>:<password>@<host>/<database>
-
-AWS_S3_BUCKET=<s3-bucket-name>
-AWS_ACCESS_KEY_ID=<aws-access-key-id>
-AWS_SECRET_ACCESS_KEY=<aws-secret-access-key>
-AWS_REGION=<aws-region>
+DATABASE_URL=sqlite+aiosqlite:///object_recognition_service/app.db
 
 DAGSHUB_OWNER=<dagshub-owner>
 DAGSHUB_USERNAME=<dagshub-username>
