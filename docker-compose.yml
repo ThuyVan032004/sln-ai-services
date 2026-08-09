@@ -6,7 +6,7 @@ services:
     env_file:
       - object_recognition_service/.env
     ports:
-      - "8000:8000"
+      - "8786:8786"
     volumes:
       - ./object_recognition_service/app.db:/app/app.db
     deploy:
