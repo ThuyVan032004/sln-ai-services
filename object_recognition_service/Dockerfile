@@ -25,6 +25,4 @@ RUN pip install --upgrade pip \
     && pip uninstall -y opencv-python opencv-python-headless \
     && pip install --no-cache-dir opencv-python-headless
 
-EXPOSE 8786
-
-CMD ["uvicorn", "object_recognition_service.host.main:app", "--host", "0.0.0.0", "--port", "8786"]
+CMD ["uvicorn", "object_recognition_service.host.main:app", "--host", "0.0.0.0", "--port", "8080"]
