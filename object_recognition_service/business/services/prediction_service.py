@@ -16,7 +16,6 @@ from dependency_injector.wiring import inject, Provide
 
 from object_recognition_service.business.application_service import ObjectRecognitionApplicationService
 from object_recognition_service.contracts.prediction.create_prediction_request import CreatePredictionDto, CreatePredictionRequest, CreatePredictionResponse
-from object_recognition_service.contracts.prediction.update_prediction_request import UpdatePredictionRequest, UpdatePredictionResponse
 from fastapi import HTTPException, status
 # from host.container import container
 
@@ -25,7 +24,6 @@ class PredictionService(ObjectRecognitionApplicationService):
     def __init__(
         self, 
         prediction_manager = Provide["prediction_manager"],
-        image_manager = Provide["image_manager"], 
         category_manager = Provide["category_manager"],
         model_manager = Provide["model_manager"],
         mlflow_service: MlflowService = Provide["mlflow_service"],
@@ -33,7 +31,6 @@ class PredictionService(ObjectRecognitionApplicationService):
     ):
         super().__init__(unit_of_work=unit_of_work)
         self.prediction_manager = prediction_manager
-        self.image_manager = image_manager
         self.mlflow_service = mlflow_service
         self.category_manager = category_manager
         self.model_manager = model_manager
