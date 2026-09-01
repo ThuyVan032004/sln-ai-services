@@ -1,8 +1,12 @@
+import os
+from dependency_injector.wiring import inject, Provide
+from object_recognition_service.business.mlflow_service import MlflowService
+from object_recognition_service.host.container import container
+
+from shared.common.constants.env_constants import EnvConstants
 import uvicorn
 from fastapi import FastAPI
 
-from object_recognition_service.host.controllers import image_controller
-from object_recognition_service.host.controllers import model_controller
 from object_recognition_service.host.controllers import prediction_controller
 
 def create_app() -> FastAPI:
@@ -12,21 +16,16 @@ def create_app() -> FastAPI:
         title="Object Recognition API",
         version="1.0.0"
     )
-
-    app.include_router(
-        image_controller.router, 
-        tags=["Images"]
-    )
-    
-    app.include_router(
-        model_controller.router,  
-        tags=["Models"]
-    )
     
     app.include_router(
         prediction_controller.router, 
         tags=["Predictions"]
     )
+    
+    object_detection_model_name = os.getenv(EnvConstants.OBJECT_DETECTION_MODEL_NAME)
+    app.mlflow_service = container.mlflow_service()
+    app.detection_model = app.mlflow_service.load_model(object_detection_model_name, "production")
+    
 
     return app
 

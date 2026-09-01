@@ -1,19 +1,10 @@
 from typing import Type, TypeVar
 
 from business.mlflow_service import MlflowService
-from data.entities.category import Category
-from data.entities.image import Image
-from data.entities.model import Model
-from data.entities.prediction import Prediction
+from object_recognition_service.data.entities.category import Category
+from object_recognition_service.data.entities.model import Model
 
-from object_recognition_service.contracts.image.create_image_request import CreateImageRequest
-from object_recognition_service.contracts.model.create_model_request import CreateModelRequest
-from object_recognition_service.contracts.model.delete_model_request import DeleteModelRequest
-from object_recognition_service.contracts.model.get_detail_model_request import GetDetailModelRequest
-from object_recognition_service.contracts.model.get_detail_model_request import GetDetailModelRequest
-from object_recognition_service.contracts.model.update_model_request import UpdateModelRequest
 from object_recognition_service.contracts.prediction.create_prediction_request import CreatePredictionRequest
-from object_recognition_service.contracts.prediction.update_prediction_request import UpdatePredictionRequest
 from cqrs import RequestMap, RequestMediator
 from dependency_injector.containers import DynamicContainer
 from dependency_injector import providers
@@ -21,13 +12,7 @@ from dependency_injector import providers
 from object_recognition_service.data.db_session import ObjectRecognitionDbSession
 from object_recognition_service.data.unit_of_work import ObjectRecognitionUnitOfWork
 from object_recognition_service.data.repository import ObjectRecognitionRepository
-from object_recognition_service.host.request_handlers.create_image_request_handler import CreateImageRequestHandler
-from object_recognition_service.host.request_handlers.create_model_request_handler import CreateModelRequestHandler
 from object_recognition_service.host.request_handlers.create_prediction_request_handler import CreatePredictionRequestHandler
-from object_recognition_service.host.request_handlers.delete_model_request_handler import DeleteModelRequestHandler
-from object_recognition_service.host.request_handlers.get_detail_model_request_handler import GetDetailModelRequestHandler
-from object_recognition_service.host.request_handlers.update_model_request_handler import UpdateModelRequestHandler
-from object_recognition_service.host.request_handlers.update_prediction_request_handler import UpdatePredictionRequestHandler
 from shared.host.service_provider import add_application_services, add_domain_services, add_mlflow_service, add_request_handlers
 
 T = TypeVar("T")
@@ -41,11 +26,6 @@ class Container(DynamicContainer):
             ObjectRecognitionUnitOfWork,
             self.db_session
         )
-        self.image_repository = providers.Factory(
-            ObjectRecognitionRepository,
-            db_session=self.db_session,
-            entity_type=Image
-        )
         self.model_repository = providers.Factory(
             ObjectRecognitionRepository,
             db_session=self.db_session,
@@ -56,21 +36,9 @@ class Container(DynamicContainer):
             db_session=self.db_session,
             entity_type=Category
         )
-        self.prediction_repository = providers.Factory(
-            ObjectRecognitionRepository,
-            db_session=self.db_session,
-            entity_type=Prediction
-        )
         
         request_map = RequestMap()
-        request_map.bind(CreateImageRequest, CreateImageRequestHandler)
         request_map.bind(CreatePredictionRequest, CreatePredictionRequestHandler)
-        request_map.bind(UpdatePredictionRequest, UpdatePredictionRequestHandler)
-        request_map.bind(CreateModelRequest, CreateModelRequestHandler)
-        request_map.bind(GetDetailModelRequest, GetDetailModelRequestHandler)
-        request_map.bind(UpdateModelRequest, UpdateModelRequestHandler)
-        request_map.bind(DeleteModelRequest, DeleteModelRequestHandler)
-        
 
         self.mediator = providers.Factory(
             RequestMediator,
@@ -127,33 +95,14 @@ add_domain_services(container)
 add_request_handlers(container)
 # add_mlflow_service(container)
 
-# container.wire(
-#     packages=[
-#         "object_recognition_service.host",      
-#         "object_recognition_service.business"   
-#     ]
-# )
-
 container.wire(modules=[
-    "object_recognition_service.host.controllers.image_controller",
-    "object_recognition_service.host.controllers.model_controller",
     "object_recognition_service.host.controllers.prediction_controller",
     
-    "object_recognition_service.host.request_handlers.create_image_request_handler",
-    "object_recognition_service.host.request_handlers.create_model_request_handler",
-    "object_recognition_service.host.request_handlers.get_detail_model_request_handler",
-    "object_recognition_service.host.request_handlers.delete_model_request_handler",
-    "object_recognition_service.host.request_handlers.update_model_request_handler",
-    "object_recognition_service.host.request_handlers.update_prediction_request_handler",
     "object_recognition_service.host.request_handlers.create_prediction_request_handler",
     
-    "object_recognition_service.business.services.image_service",
-    "object_recognition_service.business.services.model_service",
     "object_recognition_service.business.services.prediction_service",
     
-    "object_recognition_service.business.managers.image_manager",
     "object_recognition_service.business.managers.model_manager",
-    "object_recognition_service.business.managers.prediction_manager",
     "object_recognition_service.business.managers.category_manager",
 ])
 

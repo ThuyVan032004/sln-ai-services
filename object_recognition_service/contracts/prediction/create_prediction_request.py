@@ -1,7 +1,6 @@
 from typing import List
 from uuid import UUID
 
-from data.entities.prediction import Prediction
 from pydantic import BaseModel, ConfigDict
 from fastapi import File, UploadFile
 
