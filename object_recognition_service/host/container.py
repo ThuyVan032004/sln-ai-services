@@ -21,7 +21,7 @@ class Container(DynamicContainer):
     def __init__(self):
         super().__init__()
         
-        self.db_session = providers.Singleton(ObjectRecognitionDbSession) 
+        self.db_session = providers.Factory(ObjectRecognitionDbSession) 
         self.unit_of_work = providers.Factory(
             ObjectRecognitionUnitOfWork,
             self.db_session

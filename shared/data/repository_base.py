@@ -28,7 +28,6 @@ class RepositoryBase[T](IRepository[T]):
         return result.scalars().all()
 
     async def find_by(self, filter):
-        # Fix: await execute() trước, sau đó mới gọi scalars().first()
         result = await self.db_session.execute(select(self._entity_type).where(filter))
         return result.scalars().first()
 

@@ -8,12 +8,14 @@ from object_recognition_service.host.container import container
 
 router = APIRouter(prefix="/predictions")
 
+def get_mediator() -> RequestMediator:
+    return container.mediator()
+
 class PredictionController:
     @staticmethod
     @router.post("")
-    @inject
     async def create(
         request: CreatePredictionRequest = Depends(),
-        mediator: RequestMediator = Depends(Provide[container.mediator])
+        mediator: RequestMediator = Depends(get_mediator)
     ) -> CreatePredictionResponse:
         return await mediator.send(request)

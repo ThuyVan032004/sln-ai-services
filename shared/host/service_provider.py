@@ -1,5 +1,6 @@
 import importlib
 import inspect
+import logging
 import os
 import pkgutil
 from typing import Type
@@ -13,6 +14,7 @@ from shared.business.interfaces.domain_service import IDomainService
 from shared.common.constants.env_constants import EnvConstants
 from shared.business.interfaces.mlflow_service import IMlflowService
 
+logger = logging.getLogger(__name__)
 
 def add_services_with_assigned_interface[T](container: DynamicContainer, interface: Type[T]):
     application_name = os.getenv(EnvConstants.APPLICATION_NAME)
@@ -32,7 +34,7 @@ def add_services_with_assigned_interface[T](container: DynamicContainer, interfa
         try:
             modules.append(importlib.import_module(module_name))
         except Exception as e:
-            print(f"Cannot import module {module_name}: {e}")
+            logger.error(f"Cannot import module {module_name}: {e}")
     
     classes = {
         (obj.__name__ if issubclass(obj, RequestHandler) else to_snake(obj.__name__)): obj
@@ -42,7 +44,7 @@ def add_services_with_assigned_interface[T](container: DynamicContainer, interfa
     }
     
     for class_name, cls in classes.items():
-        print(f"Registering {cls.__name__} as {class_name} in the container.")
+        logger.info(f"Registering {cls.__name__} as {class_name} in the container.")
         setattr(container, class_name, Factory(cls))
         
 

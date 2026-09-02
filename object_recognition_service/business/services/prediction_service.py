@@ -1,24 +1,21 @@
 import io
-import os
+import logging
 import time
+from fastapi import HTTPException
 from sqlalchemy import and_
 
-from business.mlflow_service import MlflowService
 from common.constants import YOLO_CLASS_NAMES
 from data.entities.model import Model
 from sqlalchemy import and_
 from object_recognition_service.data.enums.model_enum import ModelStatus
 from PIL import Image
 
-from object_recognition_service.business.services.helpers.s3_helper import download_image_from_s3
-from shared.common.constants.env_constants import EnvConstants
 from dependency_injector.wiring import inject, Provide
 
 from object_recognition_service.business.application_service import ObjectRecognitionApplicationService
 from object_recognition_service.contracts.prediction.create_prediction_request import CreatePredictionDto, CreatePredictionRequest, CreatePredictionResponse
-from fastapi import HTTPException, status
-# from host.container import container
 
+logger = logging.getLogger(__name__)
 class PredictionService(ObjectRecognitionApplicationService):
     @inject
     def __init__(
@@ -32,7 +29,7 @@ class PredictionService(ObjectRecognitionApplicationService):
         self.model_manager = model_manager
 
     async def create(self, request: CreatePredictionRequest) -> CreatePredictionResponse:
-        start_time = time.time()
+        start = time.time()
         file = request.file
         file_content = await file.read()
         
@@ -76,10 +73,14 @@ class PredictionService(ObjectRecognitionApplicationService):
                 )
                 prediction_dtos.append(prediction_dto)
                 continue  # Skip this detection if no recognition model is found
+            
+            model_name = recognition_model.model_name
+            cached_model = app.recognition_model_cache.get(model_name)
 
-            loaded_recognition_model = app.mlflow_service.load_model(
-                recognition_model.model_name, "production"
-            )
+            if cached_model is None:
+                return HTTPException(status_code=500, detail=f"Recognition model not found.")
+
+            loaded_recognition_model = cached_model
 
             cropped_image = image.crop((bbox_x, bbox_y, bbox_x + bbox_width, bbox_y + bbox_height))
             
@@ -96,9 +97,8 @@ class PredictionService(ObjectRecognitionApplicationService):
             )
             
             prediction_dtos.append(prediction_dto)
-            
-        end_time = time.time()
-        print(f"Prediction processing time: {end_time - start_time:.2f} seconds")
+            end = time.time()
+            logger.info(f"Prediction took {end - start:.2f} seconds.")
             
         return CreatePredictionResponse(predictions=prediction_dtos)
     
