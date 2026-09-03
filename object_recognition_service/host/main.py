@@ -38,25 +38,29 @@ async def lifespan(app: FastAPI):
     app.recognition_model_cache = {}
 
     db_session = container.db_session()
-    recognition_models = await db_session.get_session().execute(
-        select(Model).where(
-            and_(
-                Model.model_type == "recognition",
-                Model.status == ModelStatus.READY,
+    try:
+        recognition_models = await db_session.get_session().execute(
+            select(Model).where(
+                and_(
+                    Model.model_type == "recognition",
+                    Model.status == ModelStatus.READY,
+                )
             )
         )
-    )
 
-    for model in recognition_models.scalars().all():
-        loaded_model = app.mlflow_service.load_model(
-            model.model_name,
-            "production",
-        )
-        if loaded_model is not None:
-            app.recognition_model_cache[model.model_name] = loaded_model
+        for model in recognition_models.scalars().all():
+            loaded_model = app.mlflow_service.load_model(
+                model.model_name,
+                "production",
+            )
+            if loaded_model is not None:
+                app.recognition_model_cache[model.model_name] = loaded_model
 
-    logger.info("Done app startup")
-    yield
+        logger.info("Done app startup")
+        yield
+    finally:
+        await db_session.get_session().close()
+        await db_session._engine.dispose()
 
 # Tạo instance của ứng dụng
 app = FastAPI(
