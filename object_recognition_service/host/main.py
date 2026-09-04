@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
     app.mlflow_service = container.mlflow_service()
     app.detection_model = app.mlflow_service.load_model(
         object_detection_model_name,
-        "production",
+        "dev",
     )
 
     app.recognition_model_cache = {}
@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
         for model in recognition_models.scalars().all():
             loaded_model = app.mlflow_service.load_model(
                 model.model_name,
-                "production",
+                "dev",
             )
             if loaded_model is not None:
                 app.recognition_model_cache[model.model_name] = loaded_model

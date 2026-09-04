@@ -1,6 +1,7 @@
-from asyncio.log import logger
 import os
+import tempfile
 import mlflow
+from ultralytics import YOLO
 
 from shared.business.interfaces.mlflow_service import IMlflowService
 from shared.common.constants.env_constants import EnvConstants
@@ -22,4 +23,15 @@ class MlflowServiceBase(IMlflowService):
         os.environ["MLFLOW_TRACKING_PASSWORD"] = self.dagshub_token
         
         model_uri = f"models:/{model_name}@{alias}"
-        return mlflow.pyfunc.load_model(model_uri)
+        onnx_model = mlflow.onnx.load_model(model_uri)
+        
+        temp = tempfile.NamedTemporaryFile(suffix=".onnx", delete=False)
+        try:
+            temp.write(onnx_model.SerializeToString())
+            temp.close()
+            model = YOLO(temp.name)
+            return model
+        except Exception:
+            temp.close()
+            os.unlink(temp.name)
+            raise
