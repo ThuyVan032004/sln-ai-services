@@ -2,11 +2,7 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    OMP_NUM_THREADS=1 \
-    OPENBLAS_NUM_THREADS=1 \
-    MKL_NUM_THREADS=1 \
-    NUMEXPR_NUM_THREADS=1
+    PIP_NO_CACHE_DIR=1 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -23,6 +19,6 @@ RUN pip install --upgrade pip \
     && pip install -e /app/shared \
     && pip install -e /app/object_recognition_service \
     && pip uninstall -y opencv-python opencv-python-headless \
-    && pip install --no-cache-dir opencv-python-headless
+    && pip install opencv-python-headless
 
 CMD ["uvicorn", "object_recognition_service.host.main:app", "--host", "0.0.0.0", "--port", "8080"]

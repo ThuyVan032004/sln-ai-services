@@ -40,12 +40,13 @@ class PredictionService(ObjectRecognitionApplicationService):
         from object_recognition_service.host.main import app  # Import app from main.py
         detections = (await asyncio.to_thread(
             app.detection_model.predict,
-            [detection_image],
-        ))[0]  # first (only) image's result
+            [image],
+            verbose=False,
+        ))[0]
 
-        boxes = detections["boxes_xyxy"]
-        confidences = detections["confidences"]
-        class_ids = detections["class_ids"]
+        boxes = detections.boxes.xyxy.cpu().numpy()
+        confidences = detections.boxes.conf.cpu().numpy()
+        class_ids = detections.boxes.cls.cpu().numpy().astype(int)
 
         prediction_dtos = [None] * len(boxes)
         recognition_batches = {}
@@ -122,9 +123,12 @@ class PredictionService(ObjectRecognitionApplicationService):
                 batch["detections"],
             ):
                 detection_index, bbox_x, bbox_y, bbox_width, bbox_height = detection
+                breed_index = int(result.probs.top1)
+                prediction = result.names[breed_index]
+                confidence = float(result.probs.top1conf)
                 prediction_dtos[detection_index] = CreatePredictionDto(
-                    prediction=result.get("pred", "unknown"),
-                    confidence=result.get("conf", 0.0),
+                    prediction=prediction,
+                    confidence=confidence,
                     bbox_x=bbox_x,
                     bbox_y=bbox_y,
                     bbox_width=bbox_width,
