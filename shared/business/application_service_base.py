@@ -1,9 +1,5 @@
-
-from dependency_injector.providers import Provider
-from shared.data.interfaces.unit_of_work import IUnitOfWork
-
-from shared.business.interfaces.application_service import IApplicationService
-from shared.business.interfaces.domain_service import IDomainService
+from shared.data.interfaces import IUnitOfWork
+from shared.business.interfaces import IApplicationService
 
 
 class ApplicationServiceBase(IApplicationService):

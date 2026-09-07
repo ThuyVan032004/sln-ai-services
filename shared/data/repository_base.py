@@ -2,14 +2,13 @@ from datetime import datetime
 from typing import List, Type
 
 from sqlalchemy import select
-
-from shared.data.interfaces.db_session import IDbSession
-from shared.data.interfaces.repository import IRepository
+from sqlalchemy.ext.asyncio import AsyncSession
+from shared.data.interfaces import IRepository
 
 
 class RepositoryBase[T](IRepository[T]):
-    def __init__(self, db_session: IDbSession, entity_type: Type[T]):
-        self.db_session = db_session.get_session()
+    def __init__(self, db_session: AsyncSession, entity_type: Type[T]):
+        self.db_session = db_session
         self._entity_type = entity_type
 
     def _set_create_audit_fields(self, entity: T):

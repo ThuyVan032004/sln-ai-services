@@ -1,8 +1,7 @@
-from shared.business.domain_service_base import DomainServiceBase
-from shared.data.interfaces.repository import IRepository
-from shared.data.interfaces.unit_of_work import IUnitOfWork
+from shared.business import DomainServiceBase
+from shared.data.interfaces import IRepository
 
 
-class ObjectRecognitionDomainService(DomainServiceBase):
-    def __init__(self, repository: IRepository):
+class ObjectRecognitionDomainService[T](DomainServiceBase[T]):
+    def __init__(self, repository: IRepository[T]):
         super().__init__(repository)

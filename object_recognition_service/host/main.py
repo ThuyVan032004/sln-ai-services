@@ -2,14 +2,13 @@ import os
 
 import logging
 
-from object_recognition_service.data.enums.model_enum import ModelStatus
+from object_recognition_service.data.enums import ModelStatus
 from sqlalchemy import and_, select
 
-from object_recognition_service.data.entities.model import Model
-from object_recognition_service.business.mlflow_service import MlflowService
-from object_recognition_service.host.container import container
+from object_recognition_service.data.entities import Model
+from object_recognition_service.host import container
 
-from shared.common.constants.env_constants import EnvConstants
+from shared.common.constants import EnvConstants
 import uvicorn
 from fastapi import FastAPI
 
@@ -29,17 +28,17 @@ async def lifespan(app: FastAPI):
         EnvConstants.OBJECT_DETECTION_MODEL_NAME
     )
 
-    app.mlflow_service = container.mlflow_service()
-    app.detection_model = app.mlflow_service.load_model(
+    mlflow_service = container.mlflow_service()
+    app.detection_model = mlflow_service.load_model(
         object_detection_model_name,
         "dev",
     )
 
     app.recognition_model_cache = {}
 
-    db_session = container.db_session()
+    db_session = container.session()
     try:
-        recognition_models = await db_session.get_session().execute(
+        recognition_models = await db_session.execute(
             select(Model).where(
                 and_(
                     Model.model_type == "recognition",
@@ -49,7 +48,7 @@ async def lifespan(app: FastAPI):
         )
 
         for model in recognition_models.scalars().all():
-            loaded_model = app.mlflow_service.load_model(
+            loaded_model = mlflow_service.load_model(
                 model.model_name,
                 "dev",
             )
@@ -59,10 +58,8 @@ async def lifespan(app: FastAPI):
         logger.info("Done app startup")
         yield
     finally:
-        await db_session.get_session().close()
-        await db_session._engine.dispose()
+        await db_session.close()
 
-# Tạo instance của ứng dụng
 app = FastAPI(
     title="Object Recognition API",
     version="1.0.0",

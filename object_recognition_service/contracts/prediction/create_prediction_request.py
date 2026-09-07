@@ -1,11 +1,10 @@
 from typing import List
-from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 from fastapi import File, UploadFile
 
 
-from shared.contracts.requests.create_request import CreateRequest, CreateResponse
+from shared.contracts.requests import CreateRequest, CreateResponse
 
 class CreatePredictionDto(BaseModel):
     prediction: str
@@ -16,7 +15,6 @@ class CreatePredictionDto(BaseModel):
     bbox_height: float
     
 class CreatePredictionRequest(CreateRequest):
-    # image_id: str
     file: UploadFile = File(..., description="The image file to be uploaded.")
 
 class CreatePredictionResponse(CreateResponse):

@@ -1,11 +1,11 @@
 from typing import List
 
-from shared.business.interfaces.domain_service import IDomainService
-from shared.data.interfaces.repository import IRepository
+from shared.business.interfaces import IDomainService
+from shared.data.interfaces import IRepository
 
 
-class DomainServiceBase(IDomainService):
-    def __init__(self, repository: IRepository):
+class DomainServiceBase[T](IDomainService[T]):
+    def __init__(self, repository: IRepository[T]):
         self.repository = repository
     
     async def get_all(self):
@@ -14,20 +14,20 @@ class DomainServiceBase(IDomainService):
     async def find_by(self, filter):
         return await self.repository.find_by(filter)
     
-    async def add(self, entity):
+    async def add(self, entity: T):
         return await self.repository.add(entity)
     
-    async def update(self, entity):
+    async def update(self, entity: T):
         return await self.repository.update(entity)
     
-    async def delete(self, entity):
+    async def delete(self, entity: T):
         return await self.repository.delete(entity)
 
-    async def add_range(self, entities):
+    async def add_range(self, entities: List[T]):
         return await self.repository.add_range(entities)
     
-    async def update_range(self, entities):
+    async def update_range(self, entities: List[T]):
         return await self.repository.update_range(entities)
 
-    async def delete_range(self, entities):
+    async def delete_range(self, entities: List[T]):
         return await self.repository.delete_range(entities)

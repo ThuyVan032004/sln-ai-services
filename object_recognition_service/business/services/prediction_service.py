@@ -5,16 +5,16 @@ import time
 from fastapi import HTTPException
 from sqlalchemy import and_
 
-from common.constants import YOLO_CLASS_NAMES
-from data.entities.model import Model
+from object_recognition_service.common.constants.constants import YOLO_CLASS_NAMES
+from object_recognition_service.data.entities import Model
 from sqlalchemy import and_
-from object_recognition_service.data.enums.model_enum import ModelStatus
+from object_recognition_service.data.enums import ModelStatus
 from PIL import Image
 
 from dependency_injector.wiring import inject, Provide
 
-from object_recognition_service.business.application_service import ObjectRecognitionApplicationService
-from object_recognition_service.contracts.prediction.create_prediction_request import CreatePredictionDto, CreatePredictionRequest, CreatePredictionResponse
+from object_recognition_service.business import ObjectRecognitionApplicationService
+from object_recognition_service.contracts.prediction import CreatePredictionDto, CreatePredictionRequest, CreatePredictionResponse
 
 logger = logging.getLogger(__name__)
 class PredictionService(ObjectRecognitionApplicationService):
@@ -36,7 +36,6 @@ class PredictionService(ObjectRecognitionApplicationService):
         
         image = Image.open(io.BytesIO(file_content)).convert("RGB")
 
-        detection_image = image.resize((640, 640))  # resize cho detection
         from object_recognition_service.host.main import app  # Import app from main.py
         detections = (await asyncio.to_thread(
             app.detection_model.predict,
@@ -78,7 +77,7 @@ class PredictionService(ObjectRecognitionApplicationService):
                     bbox_height=bbox_height,
                 )
                 prediction_dtos[detection_index] = prediction_dto
-                continue  # Skip this detection if no recognition model is found
+                continue
             
             model_name = recognition_model.model_name
             cached_model = app.recognition_model_cache.get(model_name)
@@ -137,6 +136,8 @@ class PredictionService(ObjectRecognitionApplicationService):
 
         end = time.time()
         logger.info(f"Prediction took {end - start:.2f} seconds.")
+        
+        await self.unit_of_work.close()
             
         return CreatePredictionResponse(
             predictions=[dto for dto in prediction_dtos if dto is not None]

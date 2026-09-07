@@ -1,11 +1,11 @@
-from data.entities.model import Model
-from data.repository import ObjectRecognitionRepository
+from object_recognition_service.data.entities import Model
+from shared.data.interfaces import IRepository
 from dependency_injector.wiring import inject, Provide
 
-from business.domain_service import ObjectRecognitionDomainService
-from object_recognition_service.host.container import container
+from object_recognition_service.business import ObjectRecognitionDomainService
+from object_recognition_service.host import container
 
-class ModelManager(ObjectRecognitionDomainService):
+class ModelManager(ObjectRecognitionDomainService[Model]):
     @inject
-    def __init__(self, repository: ObjectRecognitionRepository[Model] = Provide[container.model_repository]):
+    def __init__(self, repository: IRepository[Model] = Provide[container.repository.add_kwargs(entity_type=Model)]):
         super().__init__(repository)

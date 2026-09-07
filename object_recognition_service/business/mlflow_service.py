@@ -1,4 +1,4 @@
-from shared.business.mlflow_service_base import MlflowServiceBase
+from shared.business import MlflowServiceBase
 
 
 class MlflowService(MlflowServiceBase):

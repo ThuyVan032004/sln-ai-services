@@ -1,8 +1,8 @@
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
-from shared.common.constants.env_constants import EnvConstants
-from shared.data.interfaces.db_session import IDbSession
+from shared.common.constants import EnvConstants
+from shared.data.interfaces import IDbSession
 
 class DbSessionBase(IDbSession):
     def __init__(self):
@@ -16,9 +16,6 @@ class DbSessionBase(IDbSession):
             class_=AsyncSession,
             expire_on_commit=False,
         )
-        self._session: AsyncSession | None = None
 
     def get_session(self) -> AsyncSession:
-        if self._session is None:
-            self._session = self._session_factory()
-        return self._session
+        return self._session_factory()

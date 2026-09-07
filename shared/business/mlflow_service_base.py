@@ -3,8 +3,8 @@ import tempfile
 import mlflow
 from ultralytics import YOLO
 
-from shared.business.interfaces.mlflow_service import IMlflowService
-from shared.common.constants.env_constants import EnvConstants
+from shared.business.interfaces import IMlflowService
+from shared.common.constants import EnvConstants
 
 
 class MlflowServiceBase(IMlflowService):

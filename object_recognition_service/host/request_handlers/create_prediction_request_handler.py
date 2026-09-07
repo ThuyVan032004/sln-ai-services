@@ -1,11 +1,8 @@
-from object_recognition_service.business.services.prediction_service import PredictionService
+from object_recognition_service.business.services import PredictionService
 from cqrs import RequestHandler
 from dependency_injector.wiring import inject, Provide
-from fastapi import Depends
 
-from object_recognition_service.contracts.prediction.create_prediction_request import CreatePredictionRequest, CreatePredictionResponse
-# from host.container import container
-
+from object_recognition_service.contracts.prediction import CreatePredictionRequest, CreatePredictionResponse
 
 class CreatePredictionRequestHandler(RequestHandler[CreatePredictionRequest, CreatePredictionResponse]):
     @inject
