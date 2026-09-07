@@ -9,8 +9,7 @@ from dependency_injector.containers import DynamicContainer
 from dependency_injector.providers import Factory
 from pydantic.alias_generators import to_snake
 
-from shared.business.interfaces import IApplicationService
-from shared.business.interfaces import IDomainService
+from shared.business.interfaces import IApplicationService, IDomainService
 from shared.common.constants import EnvConstants
 from shared.business.interfaces import IMlflowService
 
@@ -25,10 +24,10 @@ def add_services_with_assigned_interface[T](container: DynamicContainer, interfa
     application = importlib.import_module(application_name)
     
     modules = []
-    for _, module_name, _ in pkgutil.walk_packages(application.__path__, prefix=f"{application_name}."):
+    for _, module_name, is_package in pkgutil.walk_packages(application.__path__, prefix=f"{application_name}."):
         parts = module_name.split(".")
         
-        if "entities" in parts:
+        if "entities" in parts or is_package:
             continue
             
         try:
@@ -58,11 +57,11 @@ def add_request_handlers(
 
     application = importlib.import_module(application_name)
 
-    for _, module_name, _ in pkgutil.walk_packages(
+    for _, module_name, is_package in pkgutil.walk_packages(
         application.__path__,
         prefix=f"{application_name}.",
     ):
-        if "entities" in module_name.split("."):
+        if "entities" in module_name.split(".") or is_package:
             continue
 
         module = importlib.import_module(module_name)

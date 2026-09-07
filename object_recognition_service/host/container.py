@@ -4,9 +4,7 @@ from cqrs import RequestMap, RequestMediator
 from dependency_injector.containers import DynamicContainer
 from dependency_injector import providers
 
-from object_recognition_service.data import ObjectRecognitionDbSession
-from object_recognition_service.data import ObjectRecognitionUnitOfWork
-from object_recognition_service.data import ObjectRecognitionRepository
+from object_recognition_service.data import ObjectRecognitionDbSession, ObjectRecognitionUnitOfWork, ObjectRecognitionRepository
 from shared.host import add_application_services, add_domain_services, add_mlflow_service, add_request_handlers
 
 T = TypeVar("T")

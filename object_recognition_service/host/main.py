@@ -6,7 +6,7 @@ from object_recognition_service.data.enums import ModelStatus
 from sqlalchemy import and_, select
 
 from object_recognition_service.data.entities import Model
-from object_recognition_service.host import container
+from object_recognition_service.host.container import container
 
 from shared.common.constants import EnvConstants
 import uvicorn
