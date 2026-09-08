@@ -3,16 +3,15 @@ from typing import Type, TypeVar
 from cqrs import RequestMap, RequestMediator
 from dependency_injector.containers import DynamicContainer
 from dependency_injector import providers
-
 from object_recognition_service.data import ObjectRecognitionDbSession, ObjectRecognitionUnitOfWork, ObjectRecognitionRepository
-from shared.host import add_application_services, add_domain_services, add_mlflow_service, add_request_handlers
 
 T = TypeVar("T")
 
 class Container(DynamicContainer):
     def __init__(self):
         super().__init__()
-        
+    
+    def configure(self):
         self.session_factory = providers.Singleton(ObjectRecognitionDbSession)
         self.session = providers.ContextLocalSingleton(
             self.session_factory.provided.get_session.call()
@@ -53,16 +52,8 @@ class Container(DynamicContainer):
                 f"Failed to create handler '{handler_cls.__name__}'."
             ) from ex
     
+    
 container = Container()
-
-add_application_services(container)
-add_domain_services(container)
-add_request_handlers(container, container.request_map)
-add_mlflow_service(container)
-
-container.wire(packages=[
-    "object_recognition_service"
-])
 
 
     

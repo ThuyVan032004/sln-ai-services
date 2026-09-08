@@ -6,13 +6,14 @@ from object_recognition_service.data.enums import ModelStatus
 from sqlalchemy import and_, select
 
 from object_recognition_service.data.entities import Model
-from object_recognition_service.host.container import container
+from object_recognition_service.host import container
 
 from shared.common.constants import EnvConstants
 import uvicorn
 from fastapi import FastAPI
 
 from object_recognition_service.host.controllers import prediction_controller
+from shared.host import add_application_services, add_domain_services, add_mlflow_service, add_request_handlers
 
 from contextlib import asynccontextmanager
 
@@ -24,18 +25,23 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    container.configure()
+    add_application_services(container)
+    add_domain_services(container)
+    add_request_handlers(container, container.request_map)
+    add_mlflow_service(container)
+    container.wire(packages=[
+        "object_recognition_service"
+    ])
     object_detection_model_name = os.getenv(
         EnvConstants.OBJECT_DETECTION_MODEL_NAME
     )
-
     mlflow_service = container.mlflow_service()
     app.detection_model = mlflow_service.load_model(
         object_detection_model_name,
         "dev",
     )
-
     app.recognition_model_cache = {}
-
     db_session = container.session()
     try:
         recognition_models = await db_session.execute(
